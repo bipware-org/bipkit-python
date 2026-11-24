@@ -56,7 +56,7 @@ class Bipkit:
         http_client: httpx.Client | None = None,
     ) -> None:
         resolved_key = api_key if api_key is not None else os.getenv("BIPKIT_API_KEY")
-        resolved_url = base_url or os.getenv("BIPKIT_BASE_URL", DEFAULT_BASE_URL)
+        resolved_url = base_url or os.getenv("BIPKIT_BASE_URL") or DEFAULT_BASE_URL
         self._transport = SyncTransport(
             api_key=resolved_key,
             base_url=resolved_url,
@@ -142,7 +142,7 @@ class AsyncBipkit:
         http_client: httpx.AsyncClient | None = None,
     ) -> None:
         resolved_key = api_key if api_key is not None else os.getenv("BIPKIT_API_KEY")
-        resolved_url = base_url or os.getenv("BIPKIT_BASE_URL", DEFAULT_BASE_URL)
+        resolved_url = base_url or os.getenv("BIPKIT_BASE_URL") or DEFAULT_BASE_URL
         self._transport = AsyncTransport(
             api_key=resolved_key,
             base_url=resolved_url,

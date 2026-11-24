@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import Any
 
 from bipkit._transport import AsyncTransport, SyncTransport
@@ -25,12 +26,12 @@ class APIKeysResource:
         *,
         name: str,
         environment: str = "live",
-        scopes: list[str] | None = None,
+        scopes: Sequence[str] | None = None,
     ) -> CreateAPIKeyResponse:
         req = CreateAPIKeyRequest(
             name=name,
             environment=environment,
-            scopes=scopes if scopes is not None else ["evaluate:run"],
+            scopes=list(scopes) if scopes is not None else ["evaluate:run"],
         )
         data = self._transport.request("POST", "/api/v1/api-keys", json_body=req.model_dump())
         return CreateAPIKeyResponse.model_validate(data)
@@ -66,12 +67,12 @@ class AsyncAPIKeysResource:
         *,
         name: str,
         environment: str = "live",
-        scopes: list[str] | None = None,
+        scopes: Sequence[str] | None = None,
     ) -> CreateAPIKeyResponse:
         req = CreateAPIKeyRequest(
             name=name,
             environment=environment,
-            scopes=scopes if scopes is not None else ["evaluate:run"],
+            scopes=list(scopes) if scopes is not None else ["evaluate:run"],
         )
         data = await self._transport.request("POST", "/api/v1/api-keys", json_body=req.model_dump())
         return CreateAPIKeyResponse.model_validate(data)

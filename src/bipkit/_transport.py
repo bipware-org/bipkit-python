@@ -40,9 +40,9 @@ def _parse_retry_after(headers: httpx.Headers) -> float | None:
 def _compute_backoff(attempt: int, retry_after: float | None) -> float:
     if retry_after is not None:
         return min(retry_after, 60.0)
-    base = 0.25 * (2**attempt)
+    base: float = 0.25 * float(2**attempt)
     jitter = random.uniform(0.0, 0.15)
-    return min(base + jitter, 15.0)
+    return float(min(base + jitter, 15.0))
 
 
 def _extract_error_message(response: httpx.Response) -> tuple[str, Any]:
