@@ -26,9 +26,7 @@ def should_escalate(
             return True
         if max_entropy is not None and response.uncertainty_entropy > max_entropy:
             return True
-        if min_margin is not None and (top.margin is None or top.margin < min_margin):
-            return True
-        return False
+        return bool(min_margin is not None and (top.margin is None or top.margin < min_margin))
 
     # EvaluateResponse: escalate if any result falls below threshold
     if not response.results:
@@ -39,10 +37,17 @@ def should_escalate(
         tier = str(item.get("confidence_tier", "")).lower()
         if tier and tier_rank.get(tier, 0) < required_rank:
             return True
-        if max_entropy is not None and "uncertainty_entropy" in item:
-            if float(item["uncertainty_entropy"]) > max_entropy:
-                return True
-        if min_margin is not None and "margin" in item and item["margin"] is not None:
-            if float(item["margin"]) < min_margin:
-                return True
+        if (
+            max_entropy is not None
+            and "uncertainty_entropy" in item
+            and float(item["uncertainty_entropy"]) > max_entropy
+        ):
+            return True
+        if (
+            min_margin is not None
+            and "margin" in item
+            and item["margin"] is not None
+            and float(item["margin"]) < min_margin
+        ):
+            return True
     return False

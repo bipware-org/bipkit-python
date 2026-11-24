@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Mapping
+from typing import Any
 
 from bipkit.client import Bipkit
 from bipkit.types.models import CandidateModel
@@ -150,7 +151,7 @@ class BipkitClassifier:
             elif isinstance(value, Mapping):
                 serialized_eval[key] = dict(value)
             else:
-                raise ValueError(f"Unsupported evaluation type: {type(value)}")
+                raise TypeError(f"Unsupported evaluation type: {type(value)}")
 
         res = self._client.evaluate(
             state=state,

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Mapping, Sequence
+from collections.abc import Mapping, Sequence
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
 
 import httpx
 
@@ -70,7 +74,7 @@ class Bipkit:
     def close(self) -> None:
         self._transport.close()
 
-    def __enter__(self) -> Bipkit:
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, *args: object) -> None:
@@ -156,7 +160,7 @@ class AsyncBipkit:
     async def aclose(self) -> None:
         await self._transport.aclose()
 
-    async def __aenter__(self) -> AsyncBipkit:
+    async def __aenter__(self) -> Self:
         return self
 
     async def __aexit__(self, *args: object) -> None:
