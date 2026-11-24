@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  core-test:
+    name: Core SDK (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install core SDK + test deps (no langchain)
+        run: pip install -e . pytest pytest-asyncio respx ruff mypy
+      - name: Lint & typecheck
+        run: |
+          ruff check src tests
+          mypy src
+      - name: Run core tests (verifies zero LangChain dependency leak)
+        run: pytest tests/ --ignore=tests/integrations -v
+
+  integrations-test:
+    name: Optional Extras ([langchain,dpl])
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install with optional extras
+        run: pip install -e ".[langchain,dpl,dev]"
+      - name: Run full test suite
+        run: pytest tests/ -v
